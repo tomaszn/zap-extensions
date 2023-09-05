@@ -61,6 +61,8 @@ public class ActiveScanJob extends AutomationJob {
 
     private Parameters parameters = new Parameters();
     private PolicyDefinition policyDefinition = new PolicyDefinition();
+    private InjectableTargets injectableTargets;
+    private InputVectorHandlers inputVectorHandlers;
     private Data data;
 
     public ActiveScanJob() {
@@ -94,6 +96,12 @@ public class ActiveScanJob extends AutomationJob {
                 case "policyDefinition":
                     // Parse the policy defn
                     parsePolicyDefinition(jobData.get(key), progress);
+                    break;
+                case "injectableTargets":
+                    parseInjectableTargets(jobData.get(key), progress);
+                    break;
+                case "inputVectorHandlers":
+                    parseInputVectorHandlers(jobData.get(key), progress);
                     break;
                 case "name":
                 case "tests":
@@ -178,6 +186,44 @@ public class ActiveScanJob extends AutomationJob {
                             this.getName(),
                             "policyDefinition",
                             policyDefn));
+        }
+    }
+
+    private void parseInjectableTargets(Object targets, AutomationProgress progress) {
+        if (targets instanceof LinkedHashMap<?, ?>) {
+            LinkedHashMap<?, ?> targetsData = (LinkedHashMap<?, ?>) targets;
+
+            JobUtils.applyParamsToObject(
+                    targetsData, this.injectableTargets, this.getName(), new String[] {}, progress);
+
+        } else if (targets != null) {
+            progress.warn(
+                    Constant.messages.getString(
+                            "automation.error.options.badlist",
+                            this.getName(),
+                            "injectableTargets",
+                            targets));
+        }
+    }
+
+    private void parseInputVectorHandlers(Object handlers, AutomationProgress progress) {
+        if (handlers instanceof LinkedHashMap<?, ?>) {
+            LinkedHashMap<?, ?> handlersData = (LinkedHashMap<?, ?>) handlers;
+
+            JobUtils.applyParamsToObject(
+                    handlersData,
+                    this.inputVectorHandlers,
+                    this.getName(),
+                    new String[] {},
+                    progress);
+
+        } else if (handlers != null) {
+            progress.warn(
+                    Constant.messages.getString(
+                            "automation.error.options.badlist",
+                            this.getName(),
+                            "inputVectorHandlers",
+                            handlers));
         }
     }
 
@@ -540,6 +586,150 @@ public class ActiveScanJob extends AutomationJob {
 
         public void setRules(List<Rule> rules) {
             this.rules = rules;
+        }
+    }
+
+    public static class InjectableTargets extends AutomationData {
+        private boolean urlQueryStringAndDataDrivenNodes;
+
+        public boolean isUrlQueryStringAndDataDrivenNodes() {
+            return urlQueryStringAndDataDrivenNodes;
+        }
+
+        public void setUrlQueryStringAndDataDrivenNodes(boolean urlQueryStringAndDataDrivenNodes) {
+            this.urlQueryStringAndDataDrivenNodes = urlQueryStringAndDataDrivenNodes;
+        }
+
+        private boolean addUrlQueryParam;
+
+        public boolean isAddUrlQueryParam() {
+            return addUrlQueryParam;
+        }
+
+        public void setAddUrlQueryParam(boolean addUrlQueryParam) {
+            this.addUrlQueryParam = addUrlQueryParam;
+        }
+
+        private boolean postData;
+
+        public boolean isPostData() {
+            return postData;
+        }
+
+        public void setPostData(boolean postData) {
+            this.postData = postData;
+        }
+
+        private boolean urlPath;
+
+        public boolean isUrlPath() {
+            return urlPath;
+        }
+
+        public void setUrlPath(boolean urlPath) {
+            this.urlPath = urlPath;
+        }
+
+        private boolean httpHeaders;
+
+        public boolean isHttpHeaders() {
+            return httpHeaders;
+        }
+
+        public void setHttpHeaders(boolean httpHeaders) {
+            this.httpHeaders = httpHeaders;
+        }
+
+        private boolean httpHeadersAllRequests;
+
+        public boolean isHttpHeadersAllRequests() {
+            return httpHeadersAllRequests;
+        }
+
+        public void setHttpHeadersAllRequests(boolean httpHeadersAllRequests) {
+            this.httpHeadersAllRequests = httpHeadersAllRequests;
+        }
+
+        private boolean cookieData;
+
+        public boolean isCookieData() {
+            return cookieData;
+        }
+
+        public void setCookieData(boolean cookieData) {
+            this.cookieData = cookieData;
+        }
+    }
+
+    public static class InputVectorHandlers extends AutomationData {
+        private boolean multiPartFormData;
+
+        public boolean isMultiPartFormData() {
+            return multiPartFormData;
+        }
+
+        public void setMultiPartFormData(boolean multiPartFormData) {
+            this.multiPartFormData = multiPartFormData;
+        }
+
+        private boolean xml;
+
+        public boolean isXml() {
+            return xml;
+        }
+
+        public void setXml(boolean xml) {
+            this.xml = xml;
+        }
+
+        private boolean json;
+
+        public boolean isJson() {
+            return json;
+        }
+
+        public void setJson(boolean json) {
+            this.json = json;
+        }
+
+        private boolean jsonScanNullValues;
+
+        public boolean isJsonScanNullValues() {
+            return jsonScanNullValues;
+        }
+
+        public void setJsonScanNullValues(boolean jsonScanNullValues) {
+            this.jsonScanNullValues = jsonScanNullValues;
+        }
+
+        private boolean googleWebToolkit;
+
+        public boolean isGoogleWebToolkit() {
+            return googleWebToolkit;
+        }
+
+        public void setGoogleWebToolkit(boolean googleWebToolkit) {
+            this.googleWebToolkit = googleWebToolkit;
+        }
+
+        private boolean oData;
+
+        public boolean isoData() {
+            return oData;
+        }
+
+        public void setoData(boolean oData) {
+            this.oData = oData;
+        }
+
+        private boolean directWebRemoting;
+
+        public boolean isDirectWebRemoting() {
+            return directWebRemoting;
+        }
+
+        public void setDirectWebRemoting(boolean directWebRemoting) {
+            this.directWebRemoting = directWebRemoting;
         }
     }
 
